@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vividha's Magical 11th Birthday! ✨</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka+One&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      :root {
+        /* Beautiful Dreamy Gradients instead of plain colors */
+        --grad-1: linear-gradient(
+          135deg,
+          #ff9a9e 0%,
+          #fecfef 100%
+        ); /* Rose Gold */
+        --grad-2: linear-gradient(
+          135deg,
+          #f6d365 0%,
+          #fda085 100%
+        ); /* Peachy Gold */
+        --grad-3: linear-gradient(
+          135deg,
+          #84fab0 0%,
+          #8fd3f4 100%
+        ); /* Mint Water */
+        --grad-4: linear-gradient(
+          135deg,
+          #a18cd1 0%,
+          #fbc2eb 100%
+        ); /* Lavender Dream */
+        --grad-5: radial-gradient(
+          circle,
+          #243b55,
+          #000000
+        ); /* Midnight Blue/Black */
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-family: "Bubblegum Sans", cursive;
+        overflow: hidden;
+        background: var(--grad-1);
+        transition: background 1s ease;
+      }
+
+      /* GLITTER ENGINE CANVAS */
+      #glitterCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      /* SHINY FLOATING EMOJIS */
+      .floating-emoji {
+        display: inline-block;
+        font-size: 3.5rem;
+        animation: bounceEmoji 2.5s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
+        margin: 10px;
+      }
+      @keyframes bounceEmoji {
+        0%,
+        100% {
+          transform: translateY(0) scale(1) rotate(0);
+        }
+        50% {
+          transform: translateY(-30px) scale(1.2) rotate(10deg);
+        }
+      }
+
+      /* SCREENS */
+      .screen {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+        z-index: 10;
+      }
+      .active {
+        display: flex;
+        animation: zoomIn 0.6s forwards;
+      }
+
+      @keyframes zoomIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+          filter: blur(10px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+          filter: blur(0);
+        }
+      }
+
+      h1 {
+        color: white;
+        font-size: 3.5rem;
+        font-family: "Fredoka One";
+        text-shadow:
+          0 0 20px rgba(255, 255, 255, 0.8),
+          2px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      /* SHINY PHOTO CARDS */
+      .slider-box {
+        position: relative;
+        width: 300px;
+        height: 380px;
+        margin: 20px auto;
+      }
+      .photo-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 12px 12px 45px 12px;
+        border-radius: 20px;
+        box-shadow:
+          0 15px 35px rgba(0, 0, 0, 0.2),
+          0 0 25px rgba(255, 255, 255, 1);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: scale(0) rotate(-10deg);
+        opacity: 0;
+        box-sizing: border-box;
+      }
+      .photo-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+      .photo-card.current {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+        z-index: 10;
+      }
+
+      /* COOL BUTTONS */
+      .btn-round {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        border: none;
+        background: white;
+        font-size: 2rem;
+        cursor: pointer;
+        box-shadow:
+          0 8px 0 #eee,
+          0 0 20px white;
+        transition: 0.2s;
+      }
+      .btn-round:hover {
+        transform: scale(1.1);
+      }
+
+      .btn-next-page {
+        background: white;
+        color: #ff4757;
+        padding: 18px 45px;
+        border-radius: 50px;
+        border: none;
+        font-size: 1.6rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow:
+          0 10px 0 rgba(0, 0, 0, 0.05),
+          0 0 30px white;
+        animation: pulseGlow 2s infinite;
+      }
+      @keyframes pulseGlow {
+        0% {
+          box-shadow: 0 0 10px white;
+        }
+        50% {
+          box-shadow: 0 0 35px white;
+        }
+        100% {
+          box-shadow: 0 0 10px white;
+        }
+      }
+
+      /* BALLOONS */
+      .balloon {
+        position: absolute;
+        bottom: -150px;
+        width: 55px;
+        height: 75px;
+        border-radius: 50%;
+        z-index: 5;
+        box-shadow:
+          inset -8px -8px 15px rgba(0, 0, 0, 0.1),
+          0 0 15px rgba(255, 255, 255, 0.4);
+        opacity: 0.9;
+      }
+      @keyframes floatUp {
+        to {
+          transform: translateY(-130vh) rotate(30deg);
+        }
+      }
+
+      /* VIDEO STYLING */
+      video {
+        border-radius: 20px;
+        border: 6px solid white;
+        box-shadow: 0 0 30px white;
+        margin: 10px;
+      }
+
+      /* FINALE RAINBOW */
+      .vividha-name {
+        font-size: 4.5rem;
+        font-family: "Fredoka One";
+        background: linear-gradient(
+          to right,
+          #ff0000,
+          #ff7f00,
+          #ffff00,
+          #00ff00,
+          #0000ff,
+          #4b0082,
+          #8b00ff
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: rainbowFlow 2s linear infinite;
+        filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.8));
+      }
+      @keyframes rainbowFlow {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 100% 50%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="bgMusic" src="birthday-song.mp3" loop></audio>
+    <!-- GLITTER STARS OVERLAY -->
+    <canvas id="glitterCanvas"></canvas>
+
+    <!-- SCREEN 1 -->
+    <div id="screen1" class="screen active">
+      <span class="floating-emoji">✨</span>
+      <h1>Hi Vividha!</h1>
+      <p
+        style="
+          color: white;
+          font-size: 1.8rem;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        "
+      >
+        Welcome to your 11th Birthday Magic! 🧚‍♀️
+      </p>
+      <button
+        class="btn-next-page"
+        onclick="
+          playMusic();
+          nextScreen(2);
+        "
+      >
+        OPEN THE MAGIC! ✨
+      </button>
+    </div>
+
+    <!-- SCREEN 2 -->
+    <div id="screen2" class="screen">
+      <span class="floating-emoji">💌</span>
+      <div
+        style="
+          background: rgba(255, 255, 255, 0.95);
+          padding: 30px;
+          border-radius: 30px;
+          transform: rotate(-1deg);
+          max-width: 320px;
+          box-shadow: 0 0 40px white;
+        "
+      >
+        <h2 style="color: #ff4757; font-family: &quot;Fredoka One&quot;">
+          Sweet 11!
+        </h2>
+        <p style="font-size: 1.3rem; color: #444">
+          You are the world's most amazing sister. May your year be as shiny as
+          this page! Love you! ❤️
+        </p>
+      </div>
+      <button
+        class="btn-next-page"
+        onclick="
+          triggerConfetti();
+          nextScreen(3);
+        "
+      >
+        See Your Memories ✨
+      </button>
+    </div>
+
+    <!-- SCREEN 3 -->
+    <div id="screen3" class="screen">
+      <h2 style="color: white; font-size: 2.5rem">Shiny Moments 📸</h2>
+      <div class="slider-box">
+        <div class="photo-card current">
+          <img
+            src="p1.png"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1530103043960-ef38714abb15?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p2.png"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p3.png"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p4.png"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1514525253361-b83f859b73c0?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p5.png"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p6.jpg"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1533294485618-fcd8d314bacd?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p7.jpg"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p8.jpg"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1481162853357-14298782f9aa?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p9.jpg"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?w=400'
+            "
+          />
+        </div>
+        <div class="photo-card">
+          <img
+            src="p10.jpg"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=400'
+            "
+          />
+        </div>
+      </div>
+      <div class="controls" style="display: flex; gap: 20px">
+        <button class="btn-round" onclick="moveSlide(-1)">⬅️</button>
+        <button class="btn-round" onclick="moveSlide(1)">➡️</button>
+      </div>
+      <button
+        class="btn-next-page"
+        style="margin-top: 20px"
+        onclick="nextScreen(4)"
+      >
+        Special Videos 🎥
+      </button>
+    </div>
+
+    <!-- SCREEN 4 -->
+    <div id="screen4" class="screen">
+      <h2 style="color: white; margin-bottom: 20px">Movie Star Vividha 🍿</h2>
+      <div
+        style="
+          display: flex;
+          gap: 15px;
+          overflow-x: auto;
+          width: 100%;
+          padding: 20px;
+        "
+      >
+        <video width="280" controls>
+          <source src="v1.mp4" type="video/mp4" />
+        </video>
+        <video width="280" controls>
+          <source src="v2.mp4" type="video/mp4" />
+        </video>
+        <video width="280" controls>
+          <source src="v3.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <button class="btn-next-page" onclick="goFinale()">
+        THE GRAND FINALE! 🎆
+      </button>
+    </div>
+
+    <!-- SCREEN 5 -->
+    <div id="screen5" class="screen">
+      <h1 class="vividha-name">HAPPIEST BIRTHDAY VIVIDHA!</h1>
+      <p style="color: gold; font-size: 2.2rem; text-shadow: 0 0 15px gold">
+        👑 OUR SHINING STAR 👑
+      </p>
+      <div class="floating-emoji" style="font-size: 5rem">🦄</div>
+      <button class="btn-next-page" onclick="location.reload()">
+        Replay Joy 🔄
+      </button>
+    </div>
+
+    <script>
+      function playMusic() {
+        let audio = document.getElementById("bgMusic");
+        audio.play();
+      }
+      // GLITTER ENGINE (Hundreds of sparkly stars)
+      const canvas = document.getElementById("glitterCanvas");
+      const ctx = canvas.getContext("2d");
+      let stars = [];
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.onresize = resize;
+      resize();
+
+      class Star {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2.5;
+          this.opacity = Math.random();
+          this.speed = Math.random() * 0.05;
+        }
+        draw() {
+          ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        update() {
+          this.opacity += this.speed;
+          if (this.opacity > 1 || this.opacity < 0) this.speed *= -1;
+        }
+      }
+
+      for (let i = 0; i < 250; i++) stars.push(new Star());
+
+      function animateStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach((s) => {
+          s.update();
+          s.draw();
+        });
+        requestAnimationFrame(animateStars);
+      }
+      animateStars();
+
+      // SCREEN LOGIC
+      const screens = document.querySelectorAll(".screen");
+      const grads = [
+        "var(--grad-1)",
+        "var(--grad-2)",
+        "var(--grad-3)",
+        "var(--grad-4)",
+        "var(--grad-5)",
+      ];
+
+      function nextScreen(index) {
+        screens.forEach((s) => s.classList.remove("active"));
+        document.getElementById("screen" + index).classList.add("active");
+        document.body.style.background = grads[index - 1];
+      }
+
+      // BALLOON BURSTS (5-6 every 1.5s)
+      function createBalloon() {
+        const b = document.createElement("div");
+        const colors = [
+          "#FF69B4",
+          "#FFD700",
+          "#87CEEB",
+          "#98FB98",
+          "#DDA0DD",
+          "#FFFFFF",
+        ];
+        b.className = "balloon";
+        b.style.left = Math.random() * 95 + "vw";
+        b.style.backgroundColor =
+          colors[Math.floor(Math.random() * colors.length)];
+        b.style.animation = `floatUp ${5 + Math.random() * 5}s linear forwards`;
+        document.body.appendChild(b);
+        setTimeout(() => b.remove(), 10000);
+      }
+
+      setInterval(() => {
+        for (let i = 0; i < 6; i++) {
+          // Releases 6 balloons at once
+          setTimeout(createBalloon, Math.random() * 1000);
+        }
+      }, 1500);
+
+      // PHOTO SLIDER
+      let photoIdx = 0;
+      const photos = document.querySelectorAll(".photo-card");
+      function moveSlide(dir) {
+        photos[photoIdx].classList.remove("current");
+        photoIdx = (photoIdx + dir + photos.length) % photos.length;
+        photos[photoIdx].classList.add("current");
+        confetti({
+          particleCount: 30,
+          spread: 50,
+          origin: { y: 0.8 },
+          colors: ["#ffffff", "#ffd700"],
+        });
+      }
+
+      function triggerConfetti() {
+        confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+      }
+
+      function goFinale() {
+        nextScreen(5);
+        const end = Date.now() + 15 * 1000;
+        (function frame() {
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+          });
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+          });
+          if (Date.now() < end) requestAnimationFrame(frame);
+        })();
+      }
+    </script>
+  </body>
+</html>
